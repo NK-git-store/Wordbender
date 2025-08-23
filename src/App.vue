@@ -1,24 +1,18 @@
 <script setup>
-import { onMounted, reactive, watch } from 'vue'
 import ConfigModalButton from '@/components/buttonsWithModals/ConfigModalButton.vue'
+import { useSettingsStore } from '@/stores/settings.js'
+import { storeToRefs } from 'pinia'
 
-const settings = reactive({ geminiApiKey: '', targetLanguage: 'English' })
-
-onMounted(() => {
-  const savedSettings = localStorage['settings'];
-  if (savedSettings) {
-    Object.assign(settings, JSON.parse(savedSettings))
-  }
-})
-
-watch(settings, (newSettings) => {
-  localStorage['settings'] = JSON.stringify(newSettings)
-}, { deep: true })
+const settingsStore = useSettingsStore()
+const { geminiApiKey, targetLanguage } = storeToRefs(settingsStore)
 </script>
 
 <template>
   <div class="absolute top-5 right-5">
-    <ConfigModalButton v-model:settings="settings" />
+    <ConfigModalButton />
+  </div>
+  <div>
+    {{geminiApiKey}} ; {{targetLanguage}}
   </div>
 </template>
 
