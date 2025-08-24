@@ -1,36 +1,24 @@
 <script setup>
 import ConfigModalButton from '@/components/buttonsWithModals/ConfigModalButton.vue'
-import { useSettingsStore } from '@/stores/settings.js'
-import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
-import { GoogleGenAI } from '@google/genai'
+import gemini from '@/libs/gemini.js'
+import { storeToRefs } from 'pinia'
+import { useSettingsStore } from '@/stores/settings.js'
 
 const settingsStore = useSettingsStore()
 const { geminiApiKey, nativeLanguage } = storeToRefs(settingsStore)
 
 const input = ref('')
-const answer = ref('')
+const answer = ref([])
 const isLoading = ref(false)
 
 const generate = async () => {
-  console.log(11)
-  if (!geminiApiKey.value) {
-    alert('Please set your Gemini API key in the settings.')
-    return
-  }
-  if (!input.value) {
-    alert('Please enter a word to translate.')
-    return
-  }
   isLoading.value = true
-
-  const ai = new GoogleGenAI({apiKey: geminiApiKey.value});
-  const response = await ai.models.generateContent({
-    model: 'gemma-3n-e4b-it',
-    contents: `Translate the following word to ${nativeLanguage.value}: ${input.value}; Respond in format "Original word - Translation"`,
-  });
-  answer.value = response.text;
-  isLoading.value = false
+  gemini.generate(geminiApiKey.value, nativeLanguage.value, input.value).then((res) => {
+    answer.value.push(res)
+  }).finally((err) => {
+    isLoading.value = false
+  })
 }
 </script>
 
@@ -46,7 +34,9 @@ const generate = async () => {
         <Button label="Generate" :disabled="isLoading" @click="generate"/>
       </div>
 
-      <p class="mt-5">{{answer}}</p>
+      <ul class="mt-5 flex flex-col-reverse gap-1">
+        <li v-for="el in answer">{{el}}</li>
+      </ul>
     </div>
   </div>
 </template>
