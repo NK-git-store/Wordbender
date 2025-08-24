@@ -6,7 +6,7 @@ import { useSettingsStore } from '@/stores/settings'
 const visible = ref(false);
 
 const settingsStore = useSettingsStore()
-const { geminiApiKey, nativeLanguage } = storeToRefs(settingsStore)
+const { geminiApiKey, nativeLanguage, dbApiKey } = storeToRefs(settingsStore)
 </script>
 
 <template>
@@ -16,6 +16,10 @@ const { geminiApiKey, nativeLanguage } = storeToRefs(settingsStore)
     <div class="flex items-center gap-4 mb-4">
       <label for="gemini-api" class="font-semibold w-40">Gemini API key</label>
       <InputText id="gemini-api" v-model="geminiApiKey" class="flex-auto" autocomplete="off" />
+    </div>
+    <div class="flex items-center gap-4 mb-4">
+      <label for="db-api" class="font-semibold w-40">DB API key</label>
+      <InputText id="db-api" v-model="dbApiKey" class="flex-auto" autocomplete="off" />
     </div>
     <div class="flex items-center gap-4 mb-8">
       <label for="target-language" class="font-semibold w-40">Native Language</label>

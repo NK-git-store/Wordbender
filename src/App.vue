@@ -1,12 +1,13 @@
 <script setup>
 import ConfigModalButton from '@/components/buttonsWithModals/ConfigModalButton.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import gemini from '@/libs/gemini.js'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings.js'
+import dbService from '@/api/dbService.js'
 
 const settingsStore = useSettingsStore()
-const { geminiApiKey, nativeLanguage } = storeToRefs(settingsStore)
+const { geminiApiKey, nativeLanguage, dbApiKey } = storeToRefs(settingsStore)
 
 const input = ref('')
 const answer = ref([])
@@ -14,29 +15,44 @@ const isLoading = ref(false)
 
 const generate = async () => {
   isLoading.value = true
-  gemini.generate(geminiApiKey.value, nativeLanguage.value, input.value).then((res) => {
-    answer.value.push(res)
-  }).finally((err) => {
+  gemini.generate(geminiApiKey.value, nativeLanguage.value, input.value).then(async (res) => {
+    res = JSON.parse(res)
+    answer.value.unshift(res) // show as gray before saving
+    const data = {
+      word: res.word,
+      translation: res.translation,
+      examples: res.examples,
+      explanation: res.explanation,
+    };
+    await dbService.create(dbApiKey.value, data)
     isLoading.value = false
   })
 }
+
+onMounted(async () => {
+  answer.value = (await dbService.getAll(dbApiKey.value)).data.list
+})
 </script>
 
 <template>
   <div class="container m-auto">
     <div class="absolute bottom-5 right-5">
-      <ConfigModalButton />
+      <ConfigModalButton/>
     </div>
     <div>
       <div class="flex flex-col gap-3 mt-5">
         <label for="input" class="font-semibold w-40">Input new word</label>
-        <InputText id="input" v-model="input" class="flex-auto" autocomplete="off" />
+        <InputText id="input" v-model="input" class="flex-auto" autocomplete="off"/>
         <Button label="Generate" :disabled="isLoading" @click="generate"/>
       </div>
 
-      <ul class="mt-5 flex flex-col-reverse gap-1">
-        <li v-for="el in answer">{{el}}</li>
-      </ul>
+      <DataTable :value="answer" tableStyle="min-width: 50rem">
+        <Column field="word" header="Code"></Column>
+        <Column field="translation" header="Name"></Column>
+        <Column field="examples" header="Category"></Column>
+        <Column field="explanation" header="Quantity"></Column>
+<!--        Delete Button-->
+      </DataTable>
     </div>
   </div>
 </template>

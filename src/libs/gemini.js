@@ -21,8 +21,9 @@ export default {
       Format of object:
       {
         "word": "the base form of the word with 'to' or 'a' if needed",
+        "examples": "example 1; example 2; (if multiple examples, separate by ; )",
         "translation": "translation in ${nativeLanguage} (if multiple meanings, separate by ; )",
-        "simple_definition": "short explanation in simple English"
+        "explanation": "short explanation in simple English"
       }
       If you think a word contains a mistake, use the corrected version of the word in Word.
       Input word: ${text}
