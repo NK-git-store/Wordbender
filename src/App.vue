@@ -31,13 +31,15 @@ onMounted(async () => {
     <div>
       <form class="flex flex-col gap-3 mt-5" @submit.prevent="generate">
         <label for="input" class="font-semibold w-40">Input new word</label>
-        <InputText
-            id="input"
-            v-model="input"
-            class="flex-auto"
-            autocomplete="off"
-        />
-        <Button label="Generate" :disabled="isLoading" type="submit"/>
+        <div class="flex gap-2">
+          <InputText
+              id="input"
+              v-model="input"
+              class="flex-auto"
+              autocomplete="off"
+          />
+          <Button label="Generate" :disabled="isLoading" type="submit"/>
+        </div>
       </form>
 
       <DataTable :value="answer" size="small" tableStyle="min-width: 50rem">
