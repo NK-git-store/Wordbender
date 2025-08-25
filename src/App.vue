@@ -7,7 +7,7 @@ import { useSettingsStore } from '@/stores/settings.js'
 import dbService from '@/api/dbService.js'
 
 const settingsStore = useSettingsStore()
-const { geminiApiKey, nativeLanguage, dbApiKey } = storeToRefs(settingsStore)
+const { dbApiKey } = storeToRefs(settingsStore)
 
 const input = ref('')
 const answer = ref([])
@@ -15,7 +15,7 @@ const isLoading = ref(false)
 
 const generate = async () => {
   isLoading.value = true
-  gemini.generate(geminiApiKey.value, nativeLanguage.value, input.value).then(async (res) => {
+  gemini.generate(input.value).then(async (res) => {
     res = JSON.parse(res)
     answer.value.unshift(res) // show as gray before saving
     const data = {

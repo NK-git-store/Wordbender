@@ -1,10 +1,15 @@
 import { GoogleGenAI } from '@google/genai'
+import { pinia } from '@/pinia'
+import { useSettingsStore } from '@/stores/settings'
+import { storeToRefs } from 'pinia'
 
 export default {
-  generate: (geminiApiKey, nativeLanguage = 'English', text) => {
-    console.log(geminiApiKey, nativeLanguage, text)
+  generate: (text) => {
+    const settings = useSettingsStore(pinia)
+    const { geminiApiKey, nativeLanguage } = storeToRefs(settings)
+
     return new Promise(async (resolve, reject) => {
-      if (!geminiApiKey) {
+      if (!geminiApiKey.value) {
         alert('Please set your Gemini API key in the settings.')
         return reject()
       }
@@ -13,7 +18,7 @@ export default {
         return reject()
       }
 
-      const ai = new GoogleGenAI({ apiKey: geminiApiKey })
+      const ai = new GoogleGenAI({ apiKey: geminiApiKey.value })
       const response = await ai.models.generateContent({
         model: 'gemma-3n-e4b-it',
         contents: `
@@ -22,7 +27,7 @@ export default {
       {
         "word": "the base form of the word with 'to' or 'a' if needed",
         "examples": "example 1; example 2; (if multiple examples, separate by ; )",
-        "translation": "translation in ${nativeLanguage} (if multiple meanings, separate by ; )",
+        "translation": "translation in ${nativeLanguage.value} (if multiple meanings, separate by ; )",
         "explanation": "short explanation in simple English"
       }
       If you think a word contains a mistake, use the corrected version of the word in Word.
