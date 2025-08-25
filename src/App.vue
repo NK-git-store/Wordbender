@@ -47,10 +47,10 @@ onMounted(async () => {
       </div>
 
       <DataTable :value="answer" tableStyle="min-width: 50rem">
-        <Column field="word" header="Code"></Column>
-        <Column field="translation" header="Name"></Column>
-        <Column field="examples" header="Category"></Column>
-        <Column field="explanation" header="Quantity"></Column>
+        <Column field="word" header="Word"></Column>
+        <Column field="translation" header="Translation"></Column>
+        <Column field="examples" header="Examples"></Column>
+        <Column field="explanation" header="Explanation"></Column>
 <!--        Delete Button-->
       </DataTable>
     </div>
