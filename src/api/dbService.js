@@ -20,8 +20,12 @@ export default {
   getAll() {
     return api.get("/records?sort=-Id")
   },
-  create(data) {
+  async create(data) {
+    delete data['Id']
+    delete data['image']
+    delete data['CreatedAt']
+    delete data['UpdatedAt']
     console.log('Creating record with data:', data)
-    return api.post("/records", data)
+    return await api.post("/records", data)
   },
 }

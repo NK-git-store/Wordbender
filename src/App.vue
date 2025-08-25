@@ -12,7 +12,8 @@ const generate = async () => {
   isLoading.value = true
   gemini.generate(input.value).then(async (word) => {
     answer.value.unshift(word) // show as gray before saving
-    await dbService.create(word)
+    const response = await dbService.create(word)
+    answer.value[0].Id = response.data.Id
     isLoading.value = false
   })
 }
