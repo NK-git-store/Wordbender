@@ -2,12 +2,7 @@
 import ConfigModalButton from '@/components/buttonsWithModals/ConfigModalButton.vue'
 import { onMounted, ref } from 'vue'
 import gemini from '@/libs/gemini.js'
-import { storeToRefs } from 'pinia'
-import { useSettingsStore } from '@/stores/settings.js'
 import dbService from '@/api/dbService.js'
-
-const settingsStore = useSettingsStore()
-const { dbApiKey } = storeToRefs(settingsStore)
 
 const input = ref('')
 const answer = ref([])
@@ -24,13 +19,13 @@ const generate = async () => {
       examples: res.examples,
       explanation: res.explanation,
     };
-    await dbService.create(dbApiKey.value, data)
+    await dbService.create(data)
     isLoading.value = false
   })
 }
 
 onMounted(async () => {
-  answer.value = (await dbService.getAll(dbApiKey.value)).data.list
+  answer.value = (await dbService.getAll()).data.list
 })
 </script>
 

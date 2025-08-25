@@ -1,23 +1,26 @@
 import axios from "axios"
+import { useSettingsStore } from "@/stores/settings.js"
+import { pinia } from "@/pinia.js"
 
 const api = axios.create({
   baseURL: "https://db.niderman.pro/api/v2/tables/mwf7sde3lmr3skz",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 })
 
-const getConfig = (dbApiKey) => ({
-  headers: {
-    "xc-token": dbApiKey,
-  },
+const settings = useSettingsStore(pinia)
+
+api.interceptors.request.use((config) => {
+  const token = settings.dbApiKey
+  config.headers = config.headers ?? {}
+  config.headers["xc-token"] = token ?? ""
+  return config
 })
 
 export default {
-  getAll(dbApiKey) {
-    return api.get("/records?sort=-Id", getConfig(dbApiKey))
+  getAll() {
+    return api.get("/records?sort=-Id")
   },
-  create(dbApiKey, data) {
-    return api.post("/records", data, getConfig(dbApiKey))
+  create(data) {
+    return api.post("/records", data)
   },
 }
