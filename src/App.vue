@@ -42,7 +42,7 @@ onMounted(async () => {
         </div>
       </form>
 
-      <DataTable :value="answer" tableStyle="min-width: 50rem">
+      <DataTable :value="answer" tableStyle="min-width: 50rem" class="mt-5" >
         <Column field="word" header="Word"></Column>
         <Column field="translation" header="Translation"></Column>
         <Column field="examples" header="Examples"></Column>
