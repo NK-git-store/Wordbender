@@ -40,11 +40,17 @@ onMounted(async () => {
         <Button label="Generate" :disabled="isLoading" type="submit"/>
       </form>
 
-      <DataTable :value="answer" tableStyle="min-width: 50rem">
-        <Column field="word" header="Word"></Column>
-        <Column field="translation" header="Translation"></Column>
-        <Column field="examples" header="Examples"></Column>
-        <Column field="explanation" header="Explanation"></Column>
+      <DataTable :value="answer" size="small" tableStyle="min-width: 50rem">
+        <Column header="Word">
+          <template #body="slotProps">
+            <span v-tooltip="slotProps.data.explanation">{{slotProps.data.word}}</span>
+          </template>
+        </Column>
+        <Column header="Translation">
+          <template #body="slotProps">
+            <span v-tooltip="slotProps.data.examples">{{slotProps.data.translation}}</span>
+          </template>
+        </Column>
 <!--        Delete Button-->
       </DataTable>
     </div>

@@ -9,6 +9,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import App from './App.vue'
 import './style.css'
+import Tooltip from 'primevue/tooltip';
 
 const primeVueSettings = {
   theme: {
@@ -23,4 +24,5 @@ app.use(PrimeVue, primeVueSettings).use(pinia).
   component('InputText', InputText).
   component('DataTable', DataTable).
   component('Column', Column).
+  directive('tooltip', Tooltip).
   mount('#app')
