@@ -35,11 +35,16 @@ onMounted(async () => {
       <ConfigModalButton/>
     </div>
     <div>
-      <div class="flex flex-col gap-3 mt-5">
+      <form class="flex flex-col gap-3 mt-5" @submit.prevent="generate">
         <label for="input" class="font-semibold w-40">Input new word</label>
-        <InputText id="input" v-model="input" class="flex-auto" autocomplete="off"/>
-        <Button label="Generate" :disabled="isLoading" @click="generate"/>
-      </div>
+        <InputText
+            id="input"
+            v-model="input"
+            class="flex-auto"
+            autocomplete="off"
+        />
+        <Button label="Generate" :disabled="isLoading" type="submit"/>
+      </form>
 
       <DataTable :value="answer" tableStyle="min-width: 50rem">
         <Column field="word" header="Word"></Column>
