@@ -27,7 +27,7 @@ const { geminiApiKey, nativeLanguage, dbApiKey } = storeToRefs(settingsStore)
     </div>
 
     <div class="flex justify-end gap-2">
-      <Button label="Close" severity="secondary" @click="visible = false" />
+      <Button label="OK" severity="success" @click="visible = false" />
     </div>
   </Dialog>
 </template>
