@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai'
 import { pinia } from '@/pinia'
 import { useSettingsStore } from '@/stores/settings'
 import { storeToRefs } from 'pinia'
+import Word from '@/classes/Word.js'
 
 export default {
   generate: (text) => {
@@ -34,8 +35,16 @@ export default {
       Input word: ${text}
     `,
       })
+      const answer = response.text.replace('```json', '').replace('```', '').trim();
+      const parsed = JSON.parse(answer)
 
-      return resolve(response.text.replace('```json', '').replace('```', '').trim())
+      const word = (new Word({
+        word: parsed.word,
+        translation: parsed.translation,
+        examples: parsed?.examples ?? '',
+        explanation: parsed?.explanation ?? '',
+      }));
+      resolve(word.toObject())
     })
   },
 }

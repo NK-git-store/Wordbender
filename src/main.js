@@ -1,25 +1,26 @@
 import { createApp } from 'vue'
-import './style.css'
-import PrimeVue from 'primevue/config';
-import App from './App.vue'
+import PrimeVue from 'primevue/config'
 import { pinia } from './pinia'
-import Aura from '@primeuix/themes/aura';
-import Button from "primevue/button"
-import Dialog from 'primevue/dialog';
-import InputText from 'primevue/inputtext';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
+import Aura from '@primeuix/themes/aura'
+import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
+import InputText from 'primevue/inputtext'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import App from './App.vue'
+import './style.css'
 
-const app = createApp(App);
-app.use(PrimeVue, {
+const primeVueSettings = {
   theme: {
-    preset: Aura
-  }
-});
-app.use(pinia)
-app.component('Button', Button);
-app.component('Dialog', Dialog);
-app.component('InputText', InputText);
-app.component('DataTable', DataTable);
-app.component('Column', Column);
-app.mount('#app')
+    preset: Aura,
+  },
+}
+
+const app = createApp(App)
+app.use(PrimeVue, primeVueSettings).use(pinia).
+  component('Button', Button).
+  component('Dialog', Dialog).
+  component('InputText', InputText).
+  component('DataTable', DataTable).
+  component('Column', Column).
+  mount('#app')

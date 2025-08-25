@@ -21,6 +21,7 @@ export default {
     return api.get("/records?sort=-Id")
   },
   create(data) {
+    console.log('Creating record with data:', data)
     return api.post("/records", data)
   },
 }

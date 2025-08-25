@@ -10,16 +10,9 @@ const isLoading = ref(false)
 
 const generate = async () => {
   isLoading.value = true
-  gemini.generate(input.value).then(async (res) => {
-    res = JSON.parse(res)
-    answer.value.unshift(res) // show as gray before saving
-    const data = {
-      word: res.word,
-      translation: res.translation,
-      examples: res.examples,
-      explanation: res.explanation,
-    };
-    await dbService.create(data)
+  gemini.generate(input.value).then(async (word) => {
+    answer.value.unshift(word) // show as gray before saving
+    await dbService.create(word)
     isLoading.value = false
   })
 }
