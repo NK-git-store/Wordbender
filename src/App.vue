@@ -1,12 +1,14 @@
 <script setup>
 import ConfigModalButton from '@/components/buttonsWithModals/ConfigModalButton.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref ,computed} from 'vue'
 import gemini from '@/libs/gemini.js'
 import dbService from '@/api/dbService.js'
 
 const input = ref('')
 const answer = ref([])
 const isLoading = ref(false)
+
+const searchWord = ref('')
 
 const generate = async () => {
   isLoading.value = true
@@ -21,11 +23,25 @@ const generate = async () => {
 onMounted(async () => {
   answer.value = (await dbService.getAll()).data.list
 })
+function deleteCard (Id){
+  dbService.delete(Id)
+  answer.value = answer.value.filter(item => item.Id !== Id)
+}
+
+const filteredAnswer = computed(() => {
+  const term = searchWord.value.trim().toLowerCase()
+  if (!term) return answer.value
+  return answer.value.filter(item =>
+      (item.word || "").toLowerCase().includes(term) ||
+      (item.translation || "").toLowerCase().includes(term)
+  )
+})
+
 </script>
 
 <template>
   <div class="container m-auto">
-    <div class="absolute bottom-5 right-5">
+    <div class="fixed bottom-5 right-5">
       <ConfigModalButton/>
     </div>
     <div>
@@ -41,8 +57,10 @@ onMounted(async () => {
           <Button label="Generate" :disabled="isLoading" type="submit"/>
         </div>
       </form>
-
-      <DataTable :value="answer" size="small" tableStyle="min-width: 50rem">
+      <div class="flex justify-end mt-4">
+        <InputText v-model="searchWord" placeholder="Keyword Search" />
+      </div>
+      <DataTable :value="filteredAnswer" tableStyle="min-width: 50rem" class="mt-5" >
         <Column header="Word">
           <template #body="slotProps">
             <span v-tooltip="slotProps.data.explanation">{{slotProps.data.word}}</span>
@@ -53,7 +71,11 @@ onMounted(async () => {
             <span v-tooltip="slotProps.data.examples">{{slotProps.data.translation}}</span>
           </template>
         </Column>
-<!--        Delete Button-->
+        <Column header="Actions">
+          <template #body="slotProps">
+            <Button  @click="deleteCard(slotProps.data.Id)" label="Delete"/>
+          </template>
+        </Column>
       </DataTable>
     </div>
   </div>
