@@ -29,7 +29,7 @@ function deleteCard (Id){
 
 <template>
   <div class="container m-auto">
-    <div class="absolute bottom-5 right-5">
+    <div class="fixed bottom-5 right-5">
       <ConfigModalButton/>
     </div>
     <div>
