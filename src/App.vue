@@ -56,15 +56,10 @@ const filteredAnswer = computed(() => {
           />
           <Button label="Generate" :disabled="isLoading" type="submit"/>
         </div>
-
       </form>
-
       <div class="flex justify-end mt-4">
         <InputText v-model="searchWord" placeholder="Keyword Search" />
       </div>
-
-
-
       <DataTable :value="filteredAnswer" tableStyle="min-width: 50rem" class="mt-5" >
         <Column field="word" header="Word"></Column>
         <Column field="translation" header="Translation"></Column>
