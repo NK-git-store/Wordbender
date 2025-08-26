@@ -23,6 +23,7 @@ onMounted(async () => {
 })
 function deleteCard (Id){
   dbService.delete(Id)
+  answer.value = answer.value.filter(item => item.Id !== Id)
 }
 </script>
 
