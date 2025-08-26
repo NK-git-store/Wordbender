@@ -28,4 +28,9 @@ export default {
     console.log('Creating record with data:', data)
     return await api.post("/records", data)
   },
+  delete(id) {
+    return api.delete("/records", {
+      data: { Id: Number(id) },
+    })
+  }
 }

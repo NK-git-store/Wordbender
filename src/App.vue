@@ -21,6 +21,9 @@ const generate = async () => {
 onMounted(async () => {
   answer.value = (await dbService.getAll()).data.list
 })
+function deleteCard (Id){
+  dbService.delete(Id)
+}
 </script>
 
 <template>
@@ -47,7 +50,11 @@ onMounted(async () => {
         <Column field="translation" header="Translation"></Column>
         <Column field="examples" header="Examples"></Column>
         <Column field="explanation" header="Explanation"></Column>
-<!--        Delete Button-->
+        <Column header="Actions">
+          <template #body="slotProps">
+            <Button  @click="deleteCard(slotProps.data.Id)" label="Delete"/>
+          </template>
+        </Column>
       </DataTable>
     </div>
   </div>
