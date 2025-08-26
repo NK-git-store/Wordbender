@@ -1,12 +1,14 @@
 <script setup>
 import ConfigModalButton from '@/components/buttonsWithModals/ConfigModalButton.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref ,computed} from 'vue'
 import gemini from '@/libs/gemini.js'
 import dbService from '@/api/dbService.js'
 
 const input = ref('')
 const answer = ref([])
 const isLoading = ref(false)
+
+const searchWord = ref('')
 
 const generate = async () => {
   isLoading.value = true
@@ -25,6 +27,16 @@ function deleteCard (Id){
   dbService.delete(Id)
   answer.value = answer.value.filter(item => item.Id !== Id)
 }
+
+const filteredAnswer = computed(() => {
+  const term = searchWord.value.trim().toLowerCase()
+  if (!term) return answer.value
+  return answer.value.filter(item =>
+      (item.word || "").toLowerCase().includes(term) ||
+      (item.translation || "").toLowerCase().includes(term)
+  )
+})
+
 </script>
 
 <template>
@@ -44,9 +56,16 @@ function deleteCard (Id){
           />
           <Button label="Generate" :disabled="isLoading" type="submit"/>
         </div>
+
       </form>
 
-      <DataTable :value="answer" tableStyle="min-width: 50rem" class="mt-5" >
+      <div class="flex justify-end mt-4">
+        <InputText v-model="searchWord" placeholder="Keyword Search" />
+      </div>
+
+
+
+      <DataTable :value="filteredAnswer" tableStyle="min-width: 50rem" class="mt-5" >
         <Column field="word" header="Word"></Column>
         <Column field="translation" header="Translation"></Column>
         <Column field="examples" header="Examples"></Column>
