@@ -46,13 +46,13 @@ const filteredAnswer = computed(() => {
     </div>
     <div>
       <form class="flex flex-col gap-3 mt-5" @submit.prevent="generate">
-        <label for="input" class="font-semibold w-40">Input new word</label>
         <div class="flex gap-2">
           <InputText
               id="input"
               v-model="input"
               class="flex-auto"
               autocomplete="off"
+              placeholder="Input new word"
           />
           <Button label="Generate" :disabled="isLoading" type="submit"/>
         </div>
