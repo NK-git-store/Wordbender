@@ -41,12 +41,12 @@ const filteredAnswer = computed(() => {
 
 <template>
   <div class="container m-auto">
-    <div class="fixed bottom-5 right-5">
+    <div class="fixed bottom-5 right-5 z-50 sm:sm:z-auto">
       <ConfigModalButton/>
     </div>
-    <div>
+    <div class="mx-2 sm:mx-0">
       <form class="flex flex-col gap-3 mt-5" @submit.prevent="generate">
-        <div class="flex gap-2">
+        <div class="flex flex-col gap-2 sm:flex-row">
           <InputText
               id="input"
               v-model="input"
@@ -57,7 +57,7 @@ const filteredAnswer = computed(() => {
           <Button label="Generate" :disabled="isLoading" type="submit"/>
         </div>
       </form>
-      <DataTable :value="filteredAnswer" tableStyle="min-width: 50rem" class="mt-5" >
+      <DataTable :value="filteredAnswer"  class="mt-5" >
         <Column header="Word">
           <template #body="slotProps">
             <span v-tooltip="slotProps.data.explanation">{{ slotProps.data.word }}</span>
