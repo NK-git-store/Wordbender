@@ -8,8 +8,6 @@ const input = ref('')
 const answer = ref([])
 const isLoading = ref(false)
 
-const searchWord = ref('')
-
 const generate = async () => {
   isLoading.value = true
   gemini.generate(input.value).then(async (word) => {
@@ -19,7 +17,6 @@ const generate = async () => {
     isLoading.value = false
     input.value = ''
   })
-
 }
 
 onMounted(async () => {
@@ -32,7 +29,7 @@ function deleteCard(Id) {
 }
 
 const filteredAnswer = computed(() => {
-  const term = searchWord.value.trim().toLowerCase()
+  const term = input.value.trim().toLowerCase()
   if (!term) return answer.value
   return answer.value.filter(item =>
       (item.word || "").toLowerCase().includes(term) ||
@@ -60,10 +57,7 @@ const filteredAnswer = computed(() => {
           <Button label="Generate" :disabled="isLoading" type="submit"/>
         </div>
       </form>
-      <div class="flex justify-end mt-4">
-        <InputText v-model="searchWord" placeholder="Keyword Search"/>
-      </div>
-      <DataTable :value="filteredAnswer" tableStyle="min-width: 50rem" class="mt-5">
+      <DataTable :value="filteredAnswer" tableStyle="min-width: 50rem" class="mt-5" >
         <Column header="Word">
           <template #body="slotProps">
             <span v-tooltip="slotProps.data.explanation">{{ slotProps.data.word }}</span>
