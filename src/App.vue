@@ -1,6 +1,6 @@
 <script setup>
 import ConfigModalButton from '@/components/buttonsWithModals/ConfigModalButton.vue'
-import { onMounted, ref ,computed} from 'vue'
+import {onMounted, ref, computed} from 'vue'
 import gemini from '@/libs/gemini.js'
 import dbService from '@/api/dbService.js'
 
@@ -17,13 +17,16 @@ const generate = async () => {
     const response = await dbService.create(word)
     answer.value[0].Id = response.data.Id
     isLoading.value = false
+    input.value = ''
   })
+
 }
 
 onMounted(async () => {
   answer.value = (await dbService.getAll()).data.list
 })
-function deleteCard (Id){
+
+function deleteCard(Id) {
   dbService.delete(Id)
   answer.value = answer.value.filter(item => item.Id !== Id)
 }
@@ -58,22 +61,22 @@ const filteredAnswer = computed(() => {
         </div>
       </form>
       <div class="flex justify-end mt-4">
-        <InputText v-model="searchWord" placeholder="Keyword Search" />
+        <InputText v-model="searchWord" placeholder="Keyword Search"/>
       </div>
-      <DataTable :value="filteredAnswer" tableStyle="min-width: 50rem" class="mt-5" >
+      <DataTable :value="filteredAnswer" tableStyle="min-width: 50rem" class="mt-5">
         <Column header="Word">
           <template #body="slotProps">
-            <span v-tooltip="slotProps.data.explanation">{{slotProps.data.word}}</span>
+            <span v-tooltip="slotProps.data.explanation">{{ slotProps.data.word }}</span>
           </template>
         </Column>
         <Column header="Translation">
           <template #body="slotProps">
-            <span v-tooltip="slotProps.data.examples">{{slotProps.data.translation}}</span>
+            <span v-tooltip="slotProps.data.examples">{{ slotProps.data.translation }}</span>
           </template>
         </Column>
         <Column header="Actions">
           <template #body="slotProps">
-            <Button  @click="deleteCard(slotProps.data.Id)" label="Delete"/>
+            <Button @click="deleteCard(slotProps.data.Id)" label="Delete"/>
           </template>
         </Column>
       </DataTable>
