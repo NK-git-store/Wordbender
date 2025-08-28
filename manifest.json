@@ -1,0 +1,20 @@
+{
+  "name": "Wordbender",
+  "short_name": "Wordbender",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#317EFB",
+  "icons": [
+    {
+      "src": "img/avatarImg.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/avatarImg.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
