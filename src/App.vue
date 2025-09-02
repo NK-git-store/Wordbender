@@ -90,7 +90,7 @@ if ('serviceWorker' in navigator) {
         >
           <span class="font-bold" v-tooltip="word.explanation">{{ word.word }}</span>
           -
-          <span v-tooltip="word.explanation">{{ word.translation }}</span>
+          <span v-tooltip="word.examples.replace(' / ', '\n\n' )">{{ word.translation }}</span>
         </li>
       </ul>
 
