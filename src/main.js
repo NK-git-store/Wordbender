@@ -7,9 +7,10 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Column from 'primevue/column'
 import App from './App.vue'
-import './style.css'
 import Tooltip from 'primevue/tooltip';
 import ContextMenu from 'primevue/contextmenu';
+import './style.css'
+import 'primeicons/primeicons.css'
 
 const primeVueSettings = {
   theme: {
