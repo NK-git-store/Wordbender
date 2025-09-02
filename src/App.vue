@@ -1,12 +1,25 @@
 <script setup>
 import ConfigModalButton from '@/components/buttonsWithModals/ConfigModalButton.vue'
-import {onMounted, ref, computed} from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import gemini from '@/libs/gemini.js'
 import dbService from '@/api/dbService.js'
 
 const input = ref('')
 const answer = ref([])
 const isLoading = ref(false)
+
+// ContextMenu
+const cm = ref(null)
+const selected = ref(null)
+const menuItems = ref([
+  {
+    label: 'Удалить',
+    icon: 'pi pi-trash',
+    command: () => {
+      if (selected.value) deleteCard(selected.value.Id)
+    }
+  }
+])
 
 const generate = async () => {
   isLoading.value = true
@@ -28,19 +41,27 @@ function deleteCard(Id) {
   answer.value = answer.value.filter(item => item.Id !== Id)
 }
 
+function onRightClick(e, word) {
+  e.preventDefault()
+  selected.value = word
+  cm.value?.show(e)
+}
+
 const filteredAnswer = computed(() => {
   const term = input.value.trim().toLowerCase()
   if (!term) return answer.value
   return answer.value.filter(item =>
-      (item.word || "").toLowerCase().includes(term) ||
-      (item.translation || "").toLowerCase().includes(term)
+    (item.word || '').toLowerCase().includes(term) ||
+    (item.translation || '').toLowerCase().includes(term)
   )
 })
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service-worker.js')
-      .catch(err => console.error('SW registration failed:', err));
+  .catch(err => console.error('SW registration failed:', err))
 }
 </script>
+
 
 <template>
   <div class="container m-auto">
@@ -61,12 +82,21 @@ if ('serviceWorker' in navigator) {
         </div>
       </form>
       <ul class="mt-5">
-        <li v-for="word in filteredAnswer" class="my-4">
+        <li
+          v-for="word in filteredAnswer"
+          :key="word.Id"
+          class="my-4"
+          @contextmenu.prevent="onRightClick($event, word)"
+        >
           <span class="font-bold" v-tooltip="word.explanation">{{ word.word }}</span>
           -
           <span v-tooltip="word.explanation">{{ word.translation }}</span>
         </li>
       </ul>
+
+      <ContextMenu ref="cm" :model="menuItems" />
+
+      <ContextMenu  ref="cm" :model="menuItems"/>
     </div>
   </div>
 </template>
