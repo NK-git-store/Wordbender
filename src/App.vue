@@ -60,23 +60,13 @@ if ('serviceWorker' in navigator) {
           <Button label="Generate" :disabled="isLoading" type="submit"/>
         </div>
       </form>
-      <DataTable :value="filteredAnswer"  class="mt-5" >
-        <Column header="Word">
-          <template #body="slotProps">
-            <span v-tooltip="slotProps.data.explanation">{{ slotProps.data.word }}</span>
-          </template>
-        </Column>
-        <Column header="Translation">
-          <template #body="slotProps">
-            <span v-tooltip="slotProps.data.examples">{{ slotProps.data.translation }}</span>
-          </template>
-        </Column>
-        <Column header="Actions">
-          <template #body="slotProps">
-            <Button @click="deleteCard(slotProps.data.Id)" label="Delete"/>
-          </template>
-        </Column>
-      </DataTable>
+      <ul class="mt-5">
+        <li v-for="word in filteredAnswer" class="my-4">
+          <span class="font-bold" v-tooltip="word.explanation">{{ word.word }}</span>
+          -
+          <span v-tooltip="word.explanation">{{ word.translation }}</span>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
