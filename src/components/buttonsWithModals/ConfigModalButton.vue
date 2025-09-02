@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingsStore } from '@/stores/settings'
 
@@ -7,6 +7,37 @@ const visible = ref(false);
 
 const settingsStore = useSettingsStore()
 const { geminiApiKey, nativeLanguage, dbApiKey } = storeToRefs(settingsStore)
+
+onMounted(() => {
+  const url = new URL(window.location.href)
+  let mutated = false
+
+  const geminiKey = url.searchParams.get('geminiApiKey')
+  if (geminiKey) {
+    geminiApiKey.value = geminiKey
+    url.searchParams.delete('geminiApiKey')
+    mutated = true
+  }
+
+  const dbKey = url.searchParams.get('dbApiKey')
+  if (dbKey) {
+    dbApiKey.value = dbKey
+    url.searchParams.delete('dbApiKey')
+    mutated = true
+  }
+
+  const nativeLang = url.searchParams.get('nativeLanguage')
+  if (nativeLang) {
+    nativeLanguage.value = nativeLang
+    url.searchParams.delete('nativeLanguage')
+    mutated = true
+  }
+
+  if (mutated) {
+    window.history.replaceState({}, document.title, url.toString())
+  }
+})
+
 </script>
 
 <template>

@@ -13,7 +13,7 @@ const cm = ref(null)
 const selected = ref(null)
 const menuItems = ref([
   {
-    label: 'Удалить',
+    label: 'Delete',
     icon: 'pi pi-trash',
     command: () => {
       if (selected.value) deleteCard(selected.value.Id)
@@ -95,8 +95,6 @@ if ('serviceWorker' in navigator) {
       </ul>
 
       <ContextMenu ref="cm" :model="menuItems" />
-
-      <ContextMenu  ref="cm" :model="menuItems"/>
     </div>
   </div>
 </template>
