@@ -19,39 +19,46 @@ export default {
                 return reject()
             }
 
-            const ai = new GoogleGenAI({apiKey: geminiApiKey.value})
-            const response = await ai.models.generateContent({
-                model: 'gemma-3n-e4b-it',
-                contents: `
-I will give you one word (which may or may not be in English).  
-Your task: always return a JSON object in the following format:
-
-{
-  "word": "the base English form of the word (with 'to' if verb, 'a' if singular countable noun)",
-  "examples": "example 1; example 2",
-  "translation": "translation in ${nativeLanguage.value} (if multiple meanings, separate by ; )",
-  "explanation": "short explanation in simple English"
-}
-
-Rules:
-- Always use the corrected English base form in "word", even if the input word is misspelled or given in another language.  
-- Never output non-English words in "word".  
-- If the input word is not English, first find its correct English equivalent.  
-- Give at least 2 simple usage examples in English, separated by ';'.  
-- Keep the explanation short and in simple English.  ђ
+      const ai = new GoogleGenAI({ apiKey: geminiApiKey.value })
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash-lite',
+        contents: `
+      I will give you an English word or phrase. Return a JSON object wish translation.
+      Format of object:
+      {
+        "word": "the base form of the word/phrase with 'to' or 'a' if needed",
+        "examples": "example 1 / example 2 (if multiple examples, separate by ' / ' )",
+        "translation": "translations in ${nativeLanguage.value} (if multiple meanings, separate by / )",
+        "explanation": "short explanation in simple English"
+      }
+      If this word doesn't exist it could be a mistake, and you have to fix it.
+      If the input word is highly offensive and you cannot process it directly,
+      return the same JSON but replace the word with a softened form (e.g. "c**t")
+      and still provide the translation and explanation in a neutral, educational way.
+      Only return the JSON object, without any additional text.
+      
+      Here is the word:
+      Input word: ${text}
     `,
-            })
-            const answer = response.text.replace('```json', '').replace('```', '').trim();
-            const parsed = JSON.parse(answer)
+        config: {
+          temperature: 0.3,
+        },
+      })
+      console.log(response)
+      const answer = response.text.replace('```json', '').
+        replace('```', '').
+        trim()
+      console.log(answer)
+      const parsed = JSON.parse(answer)
 
-            const word = {
-                ...Word,
-                word: parsed.word,
-                translation: parsed.translation,
-                examples: parsed?.examples ?? '',
-                explanation: parsed?.explanation ?? ''
-            }
-            resolve(word)
-        })
-    },
+      const word = {
+        ...Word,
+        word: parsed.word,
+        translation: parsed.translation,
+        examples: parsed?.examples ?? '',
+        explanation: parsed?.explanation ?? '',
+      }
+      resolve(word)
+    })
+  },
 }
