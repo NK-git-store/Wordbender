@@ -7,6 +7,7 @@ import dbService from '@/api/dbService.js'
 const input = ref('')
 const answer = ref([])
 const isLoading = ref(false)
+const cancelCallback = ref(null)
 
 // ContextMenu
 const cm = ref(null)
@@ -16,19 +17,33 @@ const menuItems = ref([
     label: 'Delete',
     icon: 'pi pi-trash',
     command: () => {
-      if (selected.value) deleteCard(selected.value.Id)
+      if (selected.value) {
+        deleteCard(selected.value.Id)
+        cancelCallback.value = async () => {
+          input.value = selected.value.word
+          await generate()
+          cancelCallback.value = null
+        }
+      }
     }
   }
 ])
 
-const generate = async () => {
-  isLoading.value = true
-  gemini.generate(input.value).then(async (word) => {
-    answer.value.unshift(word) // show as gray before saving
-    const response = await dbService.create(word)
-    answer.value[0].Id = response.data.Id
-    isLoading.value = false
-    input.value = ''
+const generate = () => {
+  return new Promise((resolve) => {
+    isLoading.value = true
+    gemini.generate(input.value).then(async (word) => {
+      answer.value.unshift(word) // show as gray before saving
+      const response = await dbService.create(word)
+      answer.value[0].Id = response.data.Id
+      isLoading.value = false
+      input.value = ''
+      cancelCallback.value = () => {
+        deleteCard(response.data.Id)
+        cancelCallback.value = null
+      }
+      resolve()
+    })
   })
 }
 
@@ -66,6 +81,7 @@ if ('serviceWorker' in navigator) {
 <template>
   <div class="container m-auto">
     <div class="fixed bottom-5 right-5 z-50 sm:sm:z-auto">
+      <Button v-if="cancelCallback" :disabled="isLoading" @click="cancelCallback()" label="cancel" variant="outlined" class="me-2"/>
       <ConfigModalButton/>
     </div>
     <div class="mx-2 sm:mx-0">
